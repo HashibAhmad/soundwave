@@ -2,6 +2,7 @@ import { useRef, useState, useEffect } from 'react'
 import { useGSAP } from '@gsap/react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { SplitText } from 'gsap/SplitText'
 import BackgroundWave from './BackgroundWave'
 import {
   ZapIcon,
@@ -33,9 +34,14 @@ import {
   MoonIcon,
 } from './Icons'
 import logoMark from './assets/pitch-logo-mark.png'
+import avatar1 from './assets/avatar-1.png'
+import avatar2 from './assets/avatar-2.png'
+import avatar3 from './assets/avatar-3.png'
 import './App.css'
 
-gsap.registerPlugin(ScrollTrigger)
+const AVATARS = [avatar1, avatar2, avatar3]
+
+gsap.registerPlugin(ScrollTrigger, SplitText)
 
 const WAVE_BAR_COUNT = 22
 const SCORE = 71
@@ -151,6 +157,11 @@ function App() {
       const ringOffset =
         RING_CIRCUMFERENCE - (SCORE / 100) * RING_CIRCUMFERENCE
 
+      const titleSplits = gsap.utils
+        .toArray('.hero-title-line')
+        .map((line) => new SplitText(line, { type: 'chars' }))
+      const titleChars = titleSplits.flatMap((split) => split.chars)
+
       const tl = gsap.timeline({ defaults: { ease: 'power3.out' } })
 
       tl.from('.topnav', { y: -20, opacity: 0, duration: 0.6 })
@@ -198,6 +209,28 @@ function App() {
           '-=0.9'
         )
         .from('.tool-nav', { y: 16, opacity: 0, duration: 0.6 }, '-=0.3')
+
+      // Headline letters breathe with a soft, continuous ripple — like a
+      // sound wave dispersing outward from the center of each line. Small
+      // amplitude and a gentle blur keep it cinematic and legible rather
+      // than a distracting scatter.
+      gsap.set(titleChars, { willChange: 'transform, filter' })
+      gsap.to(titleChars, {
+        y: () => gsap.utils.random(-5, 5),
+        x: () => gsap.utils.random(-3, 3),
+        filter: () => `blur(${gsap.utils.random(0, 1.4).toFixed(2)}px)`,
+        duration: () => gsap.utils.random(2, 3.2),
+        ease: 'sine.inOut',
+        repeat: -1,
+        yoyo: true,
+        repeatRefresh: true,
+        stagger: {
+          each: 0.035,
+          from: 'center',
+          repeat: -1,
+          yoyo: true,
+        },
+      })
 
       // Once the intro reveal settles, keep the feedback card "live" —
       // score and bars drift to new random values forever, like a real
@@ -470,8 +503,8 @@ function App() {
           </h1>
 
           <p className="hero-desc">
-            Practice any conversation with AI roleplay. Get real-time
-            coaching during live calls. Showcase your skills to the world.
+            AI roleplay. Live-call coaching. A profile that gets you
+            discovered.
           </p>
 
           <div className="hero-actions">
@@ -486,9 +519,9 @@ function App() {
 
           <div className="hero-social-proof">
             <div className="avatar-stack">
-              <span className="avatar" />
-              <span className="avatar" />
-              <span className="avatar" />
+              {AVATARS.map((src, i) => (
+                <img key={i} className="avatar" src={src} alt="" />
+              ))}
             </div>
             <div className="proof-text">
               <span className="proof-loved">Loved by 2.5M+ users</span>
