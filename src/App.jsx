@@ -292,6 +292,25 @@ function App() {
         .from('.prove-left', { x: -150, opacity: 0, ease: 'none' }, 0)
         .from('.prove-right', { x: 150, opacity: 0, ease: 'none' }, 0)
 
+      // Prove's background video zooms in as the section rises from the
+      // bottom of the viewport, then zooms back out as it exits the top —
+      // reversible on scroll-up via scrub.
+      gsap
+        .timeline({
+          scrollTrigger: {
+            trigger: '.prove-section',
+            start: 'top bottom',
+            end: 'bottom top',
+            scrub: 1,
+          },
+        })
+        .fromTo(
+          '.prove-bg-video',
+          { scale: 0.85 },
+          { scale: 1.2, ease: 'none' }
+        )
+        .to('.prove-bg-video', { scale: 0.85, ease: 'none' })
+
       // Teams content converges in from the sides too — text from the
       // left, the dashboard card from the right — reversible on scroll-up
       // via scrub.
@@ -732,6 +751,17 @@ function App() {
       </section>
 
       <section className="prove-section">
+        <div className="prove-bg">
+          <video
+            className="prove-bg-video"
+            src="/12487101_1920_1080_25fps_v3.mp4"
+            autoPlay
+            muted
+            loop
+            playsInline
+          />
+        </div>
+
         <div className="prove-left">
           <span className="practice-eyebrow">Prove</span>
           <h2 className="practice-title">
