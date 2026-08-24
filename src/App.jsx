@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import { useGSAP } from '@gsap/react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -29,6 +29,8 @@ import {
   RocketIcon,
   TrendingUpIcon,
   BriefcaseIcon,
+  SunIcon,
+  MoonIcon,
 } from './Icons'
 import logoMark from './assets/pitch-logo-mark.png'
 import './App.css'
@@ -120,6 +122,17 @@ function App() {
   const scoreTextRef = useRef(null)
   const videoRef = useRef(null)
   const [isPlaying, setIsPlaying] = useState(true)
+  const [theme, setTheme] = useState(
+    () => localStorage.getItem('theme') || 'dark'
+  )
+
+  useEffect(() => {
+    localStorage.setItem('theme', theme)
+  }, [theme])
+
+  const toggleTheme = () => {
+    setTheme((t) => (t === 'dark' ? 'light' : 'dark'))
+  }
 
   const togglePlay = () => {
     const video = videoRef.current
@@ -401,7 +414,10 @@ function App() {
   )
 
   return (
-    <div className="page" ref={container}>
+    <div
+      className={`page${theme === 'light' ? ' light-mode' : ''}`}
+      ref={container}
+    >
       <BackgroundWave />
 
       <nav className="topnav">
@@ -1027,6 +1043,24 @@ function App() {
           &copy; 2026 Pitch.ai. All rights reserved.
         </div>
       </footer>
+
+      <button
+        className="theme-toggle"
+        onClick={toggleTheme}
+        aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
+      >
+        <SunIcon className="theme-toggle-icon theme-toggle-icon-sun" width={14} height={14} />
+        <span
+          className={`theme-toggle-thumb${theme === 'light' ? ' theme-toggle-thumb-light' : ''}`}
+        >
+          {theme === 'dark' ? (
+            <MoonIcon width={12} height={12} />
+          ) : (
+            <SunIcon width={12} height={12} />
+          )}
+        </span>
+        <MoonIcon className="theme-toggle-icon theme-toggle-icon-moon" width={14} height={14} />
+      </button>
     </div>
   )
 }
