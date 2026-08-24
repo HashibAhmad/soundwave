@@ -353,6 +353,20 @@ function App() {
         .from('.cta-text', { y: -80, opacity: 0, ease: 'none' }, 0)
         .from('.cta-actions', { y: 80, opacity: 0, ease: 'none' }, 0)
 
+      // Footer converges vertically too — the brand/links block from the
+      // top, the copyright line from the bottom — reversible on scroll-up.
+      gsap
+        .timeline({
+          scrollTrigger: {
+            trigger: '.site-footer',
+            start: 'top 90%',
+            end: 'top 40%',
+            scrub: 1,
+          },
+        })
+        .from('.footer-top', { y: -60, opacity: 0, ease: 'none' }, 0)
+        .from('.footer-bottom', { y: 60, opacity: 0, ease: 'none' }, 0)
+
       // Hero content parts ways as it scrolls out — text left, video/cards
       // right — and eases smoothly back on scroll-up since scrub ties the
       // animation directly to scroll position.
